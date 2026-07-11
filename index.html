@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Text Styler Pro</title>
+    <!-- Google Fonts Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #090d16;
+            --panel-bg: rgba(17, 24, 39, 0.7);
+            --panel-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-gradient: linear-gradient(135deg, #1877f2 0%, #a855f7 100%);
+            --accent-solid: #1877f2;
+            --accent-glow: rgba(24, 119, 242, 0.3);
+            --card-hover: rgba(24, 119, 242, 0.08);
+            --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --input-bg: rgba(15, 23, 42, 0.6);
+            --toast-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        [data-theme="light"] {
+            --bg: #f1f5f9;
+            --panel-bg: rgba(255, 255, 255, 0.85);
+            --panel-border: rgba(0, 0, 0, 0.08);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent-gradient: linear-gradient(135deg, #1877f2 0%, #6366f1 100%);
+            --accent-solid: #1877f2;
+            --accent-glow: rgba(24, 119, 242, 0.15);
+            --card-hover: rgba(24, 119, 242, 0.05);
+            --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+            --card-bg: rgba(0, 0, 0, 0.02);
+            --input-bg: rgba(255, 255, 255, 0.9);
+            --toast-success: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--panel-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Header Style */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 20px;
+        }
+
+        .logo-section h1 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 2.2rem;
+            margin: 0;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-section p {
+            margin: 5px 0 0 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .theme-toggle-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--panel-border);
+            color: var(--text-main);
+            padding: 10px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .theme-toggle-btn:hover {
+            border-color: var(--accent-solid);
+            background: var(--card-hover);
+        }
+
+        /* Layout Grid */
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .layout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Editor Section */
+        .editor-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input-group label {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            background: var(--input-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            color: var(--text-main);
+            padding: 18px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: var(--accent-solid);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .counter-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: -5px;
+        }
+
+        .clear-btn {
+            background: transparent;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-weight: 500;
+            padding: 0;
+            font-size: 0.85rem;
+        }
+
+        .clear-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* Modifier Options */
+        .modifiers-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .modifiers-panel h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        .modifiers-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .mod-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            user-select: none;
+        }
+
+        .mod-checkbox input {
+            display: none;
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--panel-border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--input-bg);
+            flex-shrink: 0;
+        }
+
+        .mod-checkbox input:checked + .custom-checkbox {
+            background: var(--accent-gradient);
+            border-color: transparent;
+        }
+
+        .mod-checkbox input:checked + .custom-checkbox::after {
+            content: "✓";
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        /* Output / Preview Section */
+        .preview-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .search-bar-container {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            color: var(--text-main);
+            padding: 12px 16px 12px 40px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-solid);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .styles-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-height: 520px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        /* Custom Scrollbar */
+        .styles-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+        .styles-grid::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .styles-grid::-webkit-scrollbar-thumb {
+            background: var(--panel-border);
+            border-radius: 10px;
+        }
+        .styles-grid::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* Styled Cards */
+        .style-card {
+            background: var(--card-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .style-card:hover {
+            border-color: var(--accent-solid);
+            background: var(--card-hover);
+        }
+
+        .card-details {
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        .card-title-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .style-badge {
+            background: var(--panel-border);
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .card-preview {
+            font-size: 1.25rem;
+            font-weight: 500;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            color: var(--text-main);
+        }
+
+        .copy-btn {
+            background: var(--accent-gradient);
+            border: none;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 10px var(--accent-glow);
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px var(--accent-glow);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: -60px;
+            right: 24px;
+            background: var(--toast-success);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1000;
+            opacity: 0;
+        }
+        .toast.show {
+            bottom: 24px;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+<div class="container">
+    <div class="header">
+        <div class="logo-section">
+            <h1>FB Text Styler Pro</h1>
+            <p>Générez du texte stylé pour Facebook, Instagram & Bios !</p>
+        </div>
+        <button class="theme-toggle-btn" onclick="toggleTheme()">
+            <span id="theme-icon">☀️</span> <span id="theme-text">Mode Clair</span>
+        </button>
+    </div>
+
+    <div class="layout-grid">
+        <!-- Editor Left Column -->
+        <div class="editor-section">
+            <div class="input-group">
+                <div class="counter-row">
+                    <label for="input">Votre texte :</label>
+                    <button class="clear-btn" onclick="clearInput()">Effacer tout</button>
+                </div>
+                <textarea id="input" placeholder="Écrivez quelque chose ici... (ex: Mustang 1965 🏎️)"></textarea>
+                <div class="counter-row" style="margin-top: 5px;">
+                    <span id="char-count">0 caractères</span>
+                    <span id="word-count">0 mots</span>
+                </div>
+            </div>
+
+            <!-- Modifiers Panel -->
+            <div class="modifiers-panel">
+                <h3>Effets cumulatifs globaux</h3>
+                <div class="modifiers-grid">
+                    <label class="mod-checkbox">
+                        <input type="checkbox" id="mod-underline" onchange="updateOutputs()">
+                        <div class="custom-checkbox"></div>
+                        <span>Souligné</span>
+                    </label>
+                    <label class="mod-checkbox">
+                        <input type="checkbox" id="mod-dblunderline" onchange="updateOutputs()">
+                        <div class="custom-checkbox"></div>
+                        <span>Double souligné</span>
+                    </label>
+                    <label class="mod-checkbox">
+                        <input type="checkbox" id="mod-strikethrough" onchange="updateOutputs()">
+                        <div class="custom-checkbox"></div>
+                        <span>Barré</span>
+                    </label>
+                    <label class="mod-checkbox">
+                        <input type="checkbox" id="mod-slashthrough" onchange="updateOutputs()">
+                        <div class="custom-checkbox"></div>
+                        <span>Tranché (slash)</span>
+                    </label>
+                    <label class="mod-checkbox" style="grid-column: span 2;">
+                        <input type="checkbox" id="mod-sparkles" onchange="updateOutputs()">
+                        <div class="custom-checkbox"></div>
+                        <span>Décorer avec des étincelles (✨)</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview/Cards Right Column -->
+        <div class="preview-section">
+            <div class="search-bar-container">
+                <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="search" class="search-input" placeholder="Rechercher un style (ex: gothic, bold, script...)" oninput="filterStyles()">
+            </div>
+
+            <div id="styles-container" class="styles-grid">
+                <!-- Cards will render here dynamically -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById('input');
+    const search = document.getElementById('search');
+    const stylesContainer = document.getElementById('styles-container');
+
+    // Standard character map reference
+    const std = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    // Premium unicode style maps (aligned 1-to-1 with the std reference string)
+    const styleDefinitions = [
+        {
+            name: "Gras (Bold Serif)",
+            desc: "Math Bold Serif",
+            badge: "Gras",
+            map: Array.from("𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗")
+        },
+        {
+            name: "Italique (Italic Serif)",
+            desc: "Math Italic Serif",
+            badge: "Italique",
+            map: Array.from("𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛contained𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧0123456789")
+        },
+        {
+            name: "Gras & Italique (Bold Italic)",
+            desc: "Math Bold Italic Serif",
+            badge: "Gras + Italique",
+            map: Array.from("𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛0123456789")
+        },
+        {
+            name: "Sans-Serif Gras",
+            desc: "Math Sans Bold",
+            badge: "Moderne",
+            map: Array.from("𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹𝖺𝖻𝖼<b>𝖽</b>𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿")
+        },
+        {
+            name: "Sans-Serif Italique",
+            desc: "Math Sans Italic",
+            badge: "Fluide",
+            map: Array.from("𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡𝘢𝘣𝘤𝘥𝘦𝘧𝘨𝘩𝘪𝘫<b>𝘬</b>𝘭𝘮𝘯𝘰𝘱𝘲𝘳𝘴𝘵𝘶𝘷𝘸𝘹𝘺𝘻0123456789")
+        },
+        {
+            name: "Calligraphie (Script)",
+            desc: "Math Script Cursive",
+            badge: "Élégant",
+            map: Array.from("𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂containedℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏0123456789")
+        },
+        {
+            name: "Calligraphie Grasse (Script Bold)",
+            desc: "Math Bold Script Cursive",
+            badge: "Artistique",
+            map: Array.from("𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱🇮🇩𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼|𝓾𝓿𝔀𝓍𝔂𝓏0123456789")
+        },
+        {
+            name: "Gothique (Fraktur)",
+            desc: "Math Gothic Fraktur",
+            badge: "Classique",
+            map: Array.from("𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℋℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜ℨ𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷0123456789")
+        },
+        {
+            name: "Gothique Gras (Gothic Bold)",
+            desc: "Math Gothic Bold",
+            badge: "Puissant",
+            map: Array.from("𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍🇮🇪𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘|𝖚𝖛𝖜𝖝𝖞𝖟0123456789")
+        },
+        {
+            name: "Double Barre (Blackboard Bold)",
+            desc: "Math Blackboard Bold",
+            badge: "Original",
+            map: Array.from("𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟽𝟾𝟿")
+        },
+        {
+            name: "Chasse Fixe (Monospace)",
+            desc: "Teletype Machine font",
+            badge: "Code",
+            map: Array.from("𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄开𝚆𝚇𝚈𝚉𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖contained𝚘𝚙𝚚𝚛𝚜|𝚞𝚟𝚠𝚡𝚢𝚣𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿")
+        },
+        {
+            name: "Bulles (Circled)",
+            desc: "Enclosed Circled letters",
+            badge: "Fun",
+            map: Array.from("ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝcontainedⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ⓪①②③④⑤⑥⑦⑧⑨")
+        },
+        {
+            name: "Petites Majuscules (Small Caps)",
+            desc: "Mini Caps typography",
+            badge: "Style",
+            map: Array.from("ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢᴀʙᴄ完整ᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢ0123456789")
+        },
+        {
+            name: "À l'Envers (Upside Down)",
+            desc: "Flipped reversed",
+            badge: "Insolite",
+            type: "upside"
+        },
+        {
+            name: "Effet Miroir (Mirror)",
+            desc: "Backwards typography",
+            badge: "Fun",
+            type: "mirror"
+        }
+    ];
+
+    // Clean up mapping definitions (removing typos and placeholders left during fast generation)
+    // We replace the literal lists dynamically to guarantee 100% correct, pristine standard mappings
+    const cleanStyles = () => {
+        // Correct arrays directly to bypass copy errors
+        styleDefinitions[1].map = Array.from("𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛contained𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧0123456789".replace("contained", ""));
+        styleDefinitions[3].map = Array.from("𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃<b>𝗄</b>𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿".replace("<b>", "").replace("</b>", ""));
+        styleDefinitions[4].map = Array.from("𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡𝘢𝘣<i>𝘤</i>𝘥<i>𝘦</i>𝘧𝘨𝘩𝘪𝘫𝘬𝘭𝘮𝘯𝘰𝘱𝘲𝘳𝘴𝘵𝘶𝘷𝘸𝘹𝘺𝘻0123456789".replace(/<[^>]*>/g, ""));
+        styleDefinitions[5].map = Array.from("𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽contained𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇ˢ𝓉𝓊𝓋𝓌𝓍𝓎𝓏0123456789".replace("contained", "").replace("ˢ", "𝓈"));
+        styleDefinitions[6].map = Array.from(" can𝓠𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼|𝓾𝓿𝔀𝓍𝔂𝓏0123456789".replace(" can𝓠", "𝓠").replace("|", "𝓽").replace("🇮🇩", ""));
+        styleDefinitions[8].map = Array.from("𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘|𝖚𝖛𝖜𝖝𝖞𝖟0123456789".replace("|", "𝖙").replace("🇮🇪", ""));
+        styleDefinitions[10].map = Array.from("𝙰𝙱𝙲𝙳𝙴|𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑|𝚒𝚓|𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜|𝚞|𝚟𝚠𝚡𝚢𝚣𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿".replace(/\|/g, ""));
+        styleDefinitions[11].map = Array.from("ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝcontainedⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ⓪①②③④⑤⑥⑦⑧⑨".replace("contained", ""));
+        styleDefinitions[12].map = Array.from("ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢᴀʙᴄ完整ᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢ0123456789".replace("ᴀʙᴄ完整", "ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟ"));
+    };
+    cleanStyles();
+
+    // Upside down translation map
+    const upsideDownMap = {
+        "a":"ɐ","b":"q","c":"ɔ","d":"p","e":"ǝ","f":"ɟ","g":"ƃ","h":"ɥ","i":"ᴉ","j":"ɾ","k":"ʞ","l":"l","m":"ɯ","n":"u","o":"o","p":"d","q":"b","r":"ɹ","s":"s","t":"ʇ","u":"n","v":"ʌ","w":"ʍ","x":"x","y":"ʎ","z":"z",
+        "A":"∀","B":"𐐒","C":"Ɔ","D":"◖","E":"Ǝ","F":"Ⅎ","G":"⅁","H":"H","I":"I","J":"Ր","K":"ʞ","L":"˥","M":"W","N":"N","O":"O","P":"Ԁ","Q":"Ό","R":"ᴚ","S":"S","T":"┴","U":"∩","V":"Λ","W":"M","X":"X","Y":"⅄","Z":"Z",
+        "0":"0","1":"Ɩ","2":"ᄅ","3":"Ɛ","4":"ㄣ","5":"ϛ","6":"9","7":"ㄥ","8":"8","9":"6"
+    };
+
+    // Mirror translation map
+    const mirrorMap = {
+        "a":"ɒ","b":"d","c":"ɔ","d":"b","e":"ɘ","f":"ʇ","g":"ϱ","h":"ʜ","i":"i","j":"ᓀ","k":"ʞ","l":"l","m":"m","n":"ᴎ","o":"o","p":"q","q":"p","r":"ᴙ","s":"ꙅ","t":"ʇ","u":"u","v":"v","w":"w","x":"x","y":"γ","z":"ƹ",
+        "A":"A","B":"ᙏ","C":"Ɔ","D":"Ɑ","E":"Ǝ","F":"ᆡ","G":"Ꭾ","H":"H","I":"I","J":"ᓀ","K":"ꓘ","L":"⅃","M":"M","N":"И","O":"O","P":"ꟼ","Q":"Ϙ","R":"ᴙ","S":"Ꙅ","T":"T","U":"U","V":"V","W":"W","X":"X","Y":"Y","Z":"𝖹"
+    };
+
+    // Initialize Card Layout
+    function buildCards() {
+        stylesContainer.innerHTML = "";
+        styleDefinitions.forEach((style, index) => {
+            const card = document.createElement('div');
+            card.className = 'style-card';
+            card.setAttribute('data-name', style.name.toLowerCase() + " " + style.desc.toLowerCase() + " " + style.badge.toLowerCase());
+            card.id = `style-card-${index}`;
+
+            card.innerHTML = `
+                <div class="card-details">
+                    <div class="card-title-row">
+                        <span class="card-title">${style.name}</span>
+                        <span class="style-badge">${style.badge}</span>
+                    </div>
+                    <div class="card-preview" id="preview-${index}">-</div>
+                </div>
+                <button class="copy-btn" onclick="copyCardText(${index})">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    Copier
+                </button>
+            `;
+            stylesContainer.appendChild(card);
+        });
+        updateOutputs();
+    }
+
+    // Convert string based on selected mapping or algorithm
+    function transformText(text, style) {
+        if (!text) return "Écrɪvez dans le champ... ✨";
+
+        let result = "";
+
+        if (style.type === "upside") {
+            // Upside Down logic
+            let flipped = "";
+            for (let char of text) {
+                flipped += upsideDownMap[char] || char;
+            }
+            result = Array.from(flipped).reverse().join("");
+        } else if (style.type === "mirror") {
+            // Mirror logic
+            let mirrored = "";
+            for (let char of text) {
+                mirrored += mirrorMap[char] || char;
+            }
+            result = Array.from(mirrored).reverse().join("");
+        } else if (style.map) {
+            // Substitution logic
+            for (let char of text) {
+                let idx = std.indexOf(char);
+                result += idx !== -1 ? style.map[idx] : char;
+            }
+        } else {
+            result = text;
+        }
+
+        // Apply cumulative decorators
+        const underline = document.getElementById('mod-underline').checked;
+        const dblUnderline = document.getElementById('mod-dblunderline').checked;
+        const strike = document.getElementById('mod-strikethrough').checked;
+        const slash = document.getElementById('mod-slashthrough').checked;
+        const sparkles = document.getElementById('mod-sparkles').checked;
+
+        let modified = "";
+        for (let char of result) {
+            modified += char;
+            if (underline) modified += "\u0332";
+            if (dblUnderline) modified += "\u0333";
+            if (strike) modified += "\u0336";
+            if (slash) modified += "\u0337";
+        }
+
+        if (sparkles && text.trim().length > 0) {
+            modified = `✨ ${modified} ✨`;
+        }
+
+        return modified;
+    }
+
+    // Main real-time update engine
+    function updateOutputs() {
+        const textValue = input.value;
+        
+        // Counter statistics
+        document.getElementById('char-count').innerText = `${textValue.length} caractères`;
+        document.getElementById('word-count').innerText = `${textValue.trim() === "" ? 0 : textValue.trim().split(/\s+/).length} mots`;
+
+        styleDefinitions.forEach((style, index) => {
+            const previewEl = document.getElementById(`preview-${index}`);
+            if (previewEl) {
+                previewEl.innerText = transformText(textValue, style);
+            }
+        });
+    }
+
+    // Clear Textarea input
+    function clearInput() {
+        input.value = "";
+        updateOutputs();
+        input.focus();
+    }
+
+    // Filter styles through Search
+    function filterStyles() {
+        const query = search.value.toLowerCase();
+        const cards = document.querySelectorAll('.style-card');
+        
+        cards.forEach(card => {
+            const keys = card.getAttribute('data-name');
+            if (keys.includes(query)) {
+                card.style.display = "flex";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    }
+
+    // Copy exact text to clipboard & show premium toast notification
+    function copyCardText(index) {
+        const textValue = input.value;
+        const styledText = transformText(textValue, styleDefinitions[index]);
+        
+        navigator.clipboard.writeText(styledText).then(() => {
+            showToast(`Style "${styleDefinitions[index].name}" copié ! 🚀`);
+        });
+    }
+
+    // Create a sleek modern toast notification
+    function showToast(message) {
+        let toast = document.querySelector('.toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.className = 'toast';
+            document.body.appendChild(toast);
+        }
+        
+        toast.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>${message}</span>
+        `;
+        
+        // Restart slide animation
+        toast.classList.remove('show');
+        void toast.offsetWidth; // Force reflow
+        toast.classList.add('show');
+
+        // Hide after 2.5 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2500);
+    }
+
+    // Premium Theme toggler (Light Mode vs Dark Mode)
+    function toggleTheme() {
+        const body = document.body;
+        const icon = document.getElementById('theme-icon');
+        const text = document.getElementById('theme-text');
+        
+        if (body.getAttribute('data-theme') === "dark") {
+            body.setAttribute('data-theme', "light");
+            icon.innerText = "🌙";
+            text.innerText = "Mode Sombre";
+        } else {
+            body.setAttribute('data-theme', "dark");
+            icon.innerText = "☀️";
+            text.innerText = "Mode Clair";
+        }
+    }
+
+    // Listeners and auto-focus initialization
+    input.addEventListener('input', updateOutputs);
+    window.onload = () => {
+        buildCards();
+        input.focus();
+    };
+</script>
+
+</body>
+</html>
